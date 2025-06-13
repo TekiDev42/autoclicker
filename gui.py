@@ -2,11 +2,36 @@ import customtkinter as ctk
 import keyboard
 from constants import (
     WINDOW_TITLE, WINDOW_SIZE, THEME_MODE, THEME_COLOR,
-    CHANGE_KEY_BUTTON, QUIT_BUTTON, KEY_MAPPING
+    CHANGE_KEY_BUTTON, QUIT_BUTTON, KEY_MAPPING, DEFAULT_FONT, DEFAULT_FONT_SIZE
 )
 from autoclicker_core import Autoclicker
+from classes.AutoclickerLabel import AutoclickerLabel
+from classes.AutoclickerFrame import AutoclickerFrame
+from classes.AutoclickerButton import AutoclickerButton
+from classes.AutoclickerEntry import AutoclickerEntry
+from classes.AutoclickerCheckBox import AutoclickerCheckBox
+
 
 class AutoclickerGUI(ctk.CTk):
+    instructions_frame: AutoclickerFrame = None
+    title_label: AutoclickerLabel = None
+    instructions_frame: AutoclickerFrame = None
+    delay_frame: AutoclickerFrame = None
+    click_counter: AutoclickerLabel = None
+    change_key_button: AutoclickerButton = None
+    quit_button: AutoclickerButton = None
+    random_delay_var: ctk.BooleanVar = None
+    random_delay_checkbox: AutoclickerCheckBox = None
+    delay_min_label: AutoclickerLabel = None
+    delay_min_entry: AutoclickerEntry = None
+    delay_max_label: AutoclickerLabel = None
+    delay_max_entry: AutoclickerEntry = None
+    instructions_text1: AutoclickerLabel = None
+    instructions_key: AutoclickerLabel = None
+    instructions_text2: AutoclickerLabel = None
+    waiting_for_key: bool = False
+    autoclicker: Autoclicker = None
+
     """
     Main GUI class for the autoclicker application.
     Inherits from customtkinter's CTk for modern UI elements.
@@ -31,7 +56,7 @@ class AutoclickerGUI(ctk.CTk):
         
         # Set up keyboard shortcuts
         self.update_key_bindings()
-        
+
     def create_widgets(self):
         """
         Creates and arranges all UI elements including:
@@ -42,112 +67,30 @@ class AutoclickerGUI(ctk.CTk):
         - Control buttons
         """
         # Title label
-        self.title_label = ctk.CTkLabel(
-            self, 
-            text=WINDOW_TITLE, 
-            font=("Helvetica", 24, "bold")
-        )
+        self.title_label = AutoclickerLabel(self, text=WINDOW_TITLE, font=(DEFAULT_FONT, 24, "bold"))
         self.title_label.pack(pady=20)
         
         # Instructions frame with key information
-        self.instructions_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.instructions_frame.pack(pady=10)
-        
-        self.instructions_text1 = ctk.CTkLabel(
-            self.instructions_frame,
-            text="Hold the key ",
-            font=("Helvetica", 12)
-        )
-        self.instructions_text1.pack(side="left")
-        
-        self.instructions_key = ctk.CTkLabel(
-            self.instructions_frame,
-            text=self.autoclicker.control_key.upper(),
-            font=("Helvetica", 12, "bold")
-        )
-        self.instructions_key.pack(side="left")
-        
-        self.instructions_text2 = ctk.CTkLabel(
-            self.instructions_frame,
-            text=" to activate the auto-clicker",
-            font=("Helvetica", 12)
-        )
-        self.instructions_text2.pack(side="left")
+        self.make_instructions_frame()
+
+        # Instructions labels
+        self.make_instructions_labels()
 
         # Frame for delay settings
-        self.delay_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.delay_frame.pack(pady=10)
+        self.make_delay_frame()
 
-        # Label for minimum delay
-        self.delay_min_label = ctk.CTkLabel(
-            self.delay_frame,
-            text="Min delay (ms):",
-            font=("Helvetica", 12)
-        )
-        self.delay_min_label.pack(side="left", padx=5)
-
-        # Input field for minimum delay
-        self.delay_min_entry = ctk.CTkEntry(
-            self.delay_frame,
-            width=100,
-            font=("Helvetica", 12)
-        )
-        self.delay_min_entry.insert(0, str(int(self.autoclicker.delay_min * 1000)))
-        self.delay_min_entry.pack(side="left", padx=5)
-        self.delay_min_entry.bind("<Return>", self.update_delay)
-
-        # Label for maximum delay
-        self.delay_max_label = ctk.CTkLabel(
-            self.delay_frame,
-            text="Max delay (ms):",
-            font=("Helvetica", 12)
-        )
-        self.delay_max_label.pack(side="left", padx=5)
-
-        # Input field for maximum delay
-        self.delay_max_entry = ctk.CTkEntry(
-            self.delay_frame,
-            width=100,
-            font=("Helvetica", 12)
-        )
-        self.delay_max_entry.insert(0, str(int(self.autoclicker.delay_max * 1000)))
-        self.delay_max_entry.pack(side="left", padx=5)
-        self.delay_max_entry.bind("<Return>", self.update_delay)
-
-        # Random delay checkbox
-        self.random_delay_var = ctk.BooleanVar(value=self.autoclicker.random_delay)
-        self.random_delay_checkbox = ctk.CTkCheckBox(
-            self.delay_frame,
-            text="Random delay",
-            variable=self.random_delay_var,
-            command=self.toggle_random_delay,
-            font=("Helvetica", 12)
-        )
-        self.random_delay_checkbox.pack(side="left", padx=5)
+        # Delay settings
+        self.make_delay_settings()
         
         # Click counter
-        self.click_counter = ctk.CTkLabel(
-            self,
-            text="Clicks: 0",
-            font=("Helvetica", 14)
-        )
-        self.click_counter.pack(pady=10)
+        self.make_click_counter()
 
         # Button to change the key
-        self.change_key_button = ctk.CTkButton(
-            self,
-            command=self.start_key_change,
-            **CHANGE_KEY_BUTTON
-        )
-        self.change_key_button.pack(pady=10)
+        self.make_change_key_button()
         
         # Close button
-        self.quit_button = ctk.CTkButton(
-            self,
-            command=self.quit,
-            **QUIT_BUTTON
-        )
-        self.quit_button.pack(pady=20)
+        self.make_quit_button()
+
 
     def convert_key(self, tk_key):
         """
@@ -160,15 +103,85 @@ class AutoclickerGUI(ctk.CTk):
         key = tk_key.lower()
         return KEY_MAPPING.get(key, key)
 
-    def start_key_change(self):
-        """
-        Initiates the process of changing the control key
-        Updates UI to indicate waiting for new key input
-        """
-        if not self.waiting_for_key:
-            self.waiting_for_key = True
-            self.change_key_button.configure(text="Press a key...")
-            self.bind_all("<Key>", self.on_key_press)
+    def make_delay_settings(self):
+        # Label for minimum delay
+        self.delay_min_label = AutoclickerLabel(self.delay_frame, text="Min delay (ms):")
+        self.delay_min_label.pack(side="left", padx=5)
+
+        # Input field for minimum delay
+        self.delay_min_entry = AutoclickerEntry(self.delay_frame)
+        self.delay_min_entry.insert(0, str(int(self.autoclicker.delay_min * 1000)))
+        self.delay_min_entry.pack(side="left", padx=5)
+        self.delay_min_entry.bind("<Return>", self.update_delay)
+
+        # Label for maximum delay
+        self.delay_max_label = AutoclickerLabel(self.delay_frame,text="Max delay (ms):")
+        self.delay_max_label.pack(side="left", padx=5)
+
+        # Input field for maximum delay
+        self.delay_max_entry = AutoclickerEntry(self.delay_frame)
+        self.delay_max_entry.insert(0, str(int(self.autoclicker.delay_max * 1000)))
+        self.delay_max_entry.pack(side="left", padx=5)
+        self.delay_max_entry.bind("<Return>", self.update_delay)
+
+        # Random delay checkbox
+        self.random_delay_var = ctk.BooleanVar(value=self.autoclicker.random_delay)
+        self.random_delay_checkbox = AutoclickerCheckBox(
+            self.delay_frame,
+            text="Random delay",
+            variable=self.random_delay_var,
+            command=self.toggle_random_delay,
+        )
+        self.random_delay_checkbox.pack(side="left", padx=5)
+
+    def make_delay_frame(self):
+        self.delay_frame = AutoclickerFrame(self)
+        self.delay_frame.pack(pady=10)
+
+    def make_click_counter(self):
+        self.click_counter = AutoclickerLabel(self, text="Clicks: 0")
+        self.click_counter.pack(pady=10)
+
+    def make_change_key_button(self):
+        self.change_key_button = AutoclickerButton(
+            self,
+            command=self.start_key_change,
+            **CHANGE_KEY_BUTTON
+        )
+        self.change_key_button.pack(pady=10)
+
+    def make_quit_button(self):
+        self.quit_button = AutoclickerButton(
+            self,
+            command=self.quit,
+            **QUIT_BUTTON
+        )
+        self.quit_button.pack(pady=20)
+
+    def make_instructions_frame(self):
+        self.instructions_frame = AutoclickerFrame(self)
+        self.instructions_frame.pack(pady=10)
+
+    def make_instructions_labels(self):
+        self.instructions_text1 = AutoclickerLabel(
+            self.instructions_frame, 
+            text="Hold the key "
+        )
+        
+        self.instructions_key = AutoclickerLabel(
+            self.instructions_frame, 
+            text=self.autoclicker.control_key.upper(), 
+            font=(DEFAULT_FONT, DEFAULT_FONT_SIZE, "bold")
+        )
+        
+        self.instructions_text2 = AutoclickerLabel(
+            self.instructions_frame, 
+            text=" to activate the auto-clicker"
+        )
+
+        self.instructions_key.pack(side="left")
+        self.instructions_text1.pack(side="left")
+        self.instructions_text2.pack(side="left")
 
     def on_key_press(self, event):
         """
@@ -185,19 +198,6 @@ class AutoclickerGUI(ctk.CTk):
             self.unbind_all("<Key>")
             self.update_key_bindings()
 
-    def update_key_bindings(self):
-        """
-        Updates keyboard bindings for autoclicker control
-        Removes old bindings and sets up new ones for:
-        - Control key press (start clicking)
-        - Control key release (stop clicking)
-        - F7 key (quit application)
-        """
-        keyboard.unhook_all()
-        keyboard.on_press_key(self.autoclicker.control_key, lambda _: self.start_clicking())
-        keyboard.on_release_key(self.autoclicker.control_key, lambda _: self.stop_clicking())
-        keyboard.on_press_key('f7', lambda _: self.quit())
-        
     def start_clicking(self):
         """
         Starts the autoclicker and updates click counter
@@ -205,12 +205,32 @@ class AutoclickerGUI(ctk.CTk):
         self.autoclicker.start()
         self.click_counter.configure(text=f"Clicks: {self.autoclicker.click_count}")
         
+    def start_key_change(self):
+        """
+        Initiates the process of changing the control key
+        Updates UI to indicate waiting for new key input
+        """
+        if not self.waiting_for_key:
+            self.waiting_for_key = True
+            self.change_key_button.configure(text="Press a key...")
+            self.bind_all("<Key>", self.on_key_press)
+
     def stop_clicking(self):
         """
         Stops the autoclicker and updates click counter
         """
         self.autoclicker.stop()
         self.click_counter.configure(text=f"Clicks: {self.autoclicker.click_count}")
+
+    def toggle_random_delay(self):
+        """
+        Toggles random delay mode
+        When disabled, sets maximum delay equal to minimum delay
+        """
+        self.autoclicker.set_random_delay(self.random_delay_var.get())
+        if not self.random_delay_var.get():
+            self.delay_max_entry.delete(0, "end")
+            self.delay_max_entry.insert(0, str(int(self.autoclicker.delay_min * 1000))) 
 
     def update_delay(self, event=None):
         """
@@ -244,12 +264,15 @@ class AutoclickerGUI(ctk.CTk):
             self.delay_max_entry.delete(0, "end")
             self.delay_max_entry.insert(0, str(int(self.autoclicker.delay_max * 1000)))
 
-    def toggle_random_delay(self):
+    def update_key_bindings(self):
         """
-        Toggles random delay mode
-        When disabled, sets maximum delay equal to minimum delay
+        Updates keyboard bindings for autoclicker control
+        Removes old bindings and sets up new ones for:
+        - Control key press (start clicking)
+        - Control key release (stop clicking)
+        - F7 key (quit application)
         """
-        self.autoclicker.set_random_delay(self.random_delay_var.get())
-        if not self.random_delay_var.get():
-            self.delay_max_entry.delete(0, "end")
-            self.delay_max_entry.insert(0, str(int(self.autoclicker.delay_min * 1000))) 
+        keyboard.unhook_all()
+        keyboard.on_press_key(self.autoclicker.control_key, lambda _: self.start_clicking())
+        keyboard.on_release_key(self.autoclicker.control_key, lambda _: self.stop_clicking())
+        keyboard.on_press_key('f7', lambda _: self.quit())
