@@ -66,8 +66,12 @@ class AutoclickerGUI(ctk.CTk):
         - Click counter
         - Control buttons
         """
+        # Main container frame
+        self.main_frame = AutoclickerFrame(self)
+        self.main_frame.place(relx=0.5, rely=0.5, anchor="center")
+        
         # Title label
-        self.title_label = AutoclickerLabel(self, text=WINDOW_TITLE, font=(DEFAULT_FONT, 24, "bold"))
+        self.title_label = AutoclickerLabel(self.main_frame, text=WINDOW_TITLE, font=(DEFAULT_FONT, 24, "bold"))
         self.title_label.pack(pady=20)
         
         # Instructions frame with key information
@@ -85,12 +89,14 @@ class AutoclickerGUI(ctk.CTk):
         # Click counter
         self.make_click_counter()
 
+        # buttons frame
+        self.make_buttons_frame()
+
         # Button to change the key
         self.make_change_key_button()
         
         # Close button
         self.make_quit_button()
-
 
     def convert_key(self, tk_key):
         """
@@ -104,16 +110,20 @@ class AutoclickerGUI(ctk.CTk):
         return KEY_MAPPING.get(key, key)
 
     def make_click_counter(self):
-        self.click_counter = AutoclickerLabel(self, text="Clicks: 0")
+        self.click_counter = AutoclickerLabel(self.main_frame, text="Clicks: 0")
         self.click_counter.pack(pady=10)
+
+    def make_buttons_frame(self):
+        self.buttons_frame = AutoclickerFrame(self.main_frame)
+        self.buttons_frame.pack(pady=10)
 
     def make_change_key_button(self):
         self.change_key_button = AutoclickerButton(
-            self,
+            self.buttons_frame,
             command=self.start_key_change,
             **CHANGE_KEY_BUTTON
         )
-        self.change_key_button.pack(pady=10)
+        self.change_key_button.pack(side="left", padx=10)
 
     def make_delay_settings(self):
         # Label for minimum delay
@@ -147,19 +157,19 @@ class AutoclickerGUI(ctk.CTk):
         self.random_delay_checkbox.pack(side="left", padx=5)
 
     def make_delay_frame(self):
-        self.delay_frame = AutoclickerFrame(self)
+        self.delay_frame = AutoclickerFrame(self.main_frame)
         self.delay_frame.pack(pady=10)
 
     def make_quit_button(self):
         self.quit_button = AutoclickerButton(
-            self,
+            self.buttons_frame,
             command=self.quit,
             **QUIT_BUTTON
         )
-        self.quit_button.pack(pady=20)
+        self.quit_button.pack(side="left", padx=10)
 
     def make_instructions_frame(self):
-        self.instructions_frame = AutoclickerFrame(self)
+        self.instructions_frame = AutoclickerFrame(self.main_frame)
         self.instructions_frame.pack(pady=10)
 
     def make_instructions_labels(self):
@@ -179,8 +189,8 @@ class AutoclickerGUI(ctk.CTk):
             text=" to activate the auto-clicker"
         )
 
-        self.instructions_key.pack(side="left")
         self.instructions_text1.pack(side="left")
+        self.instructions_key.pack(side="left")
         self.instructions_text2.pack(side="left")
 
     def on_key_press(self, event):
