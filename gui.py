@@ -13,6 +13,8 @@ from classes.AutoclickerCheckBox import AutoclickerCheckBox
 
 
 class AutoclickerGUI(ctk.CTk):
+    main_frame: AutoclickerFrame = None
+    buttons_frame: AutoclickerFrame = None
     instructions_frame: AutoclickerFrame = None
     title_label: AutoclickerLabel = None
     instructions_frame: AutoclickerFrame = None
