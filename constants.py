@@ -2,7 +2,7 @@
 PYAUTOGUI_FAILSAFE = True
 PYAUTOGUI_PAUSE = 0.010
 
-# Dictionnaire de conversion des touches Tkinter vers keyboard
+# Dictionary of Tkinter key conversion to keyboard library
 KEY_MAPPING = {
     'control_l': 'ctrl',
     'control_r': 'ctrl',
@@ -46,23 +46,24 @@ KEY_MAPPING = {
     'f12': 'f12'
 }
 
-# Configuration de l'interface
+# Interface configuration
 WINDOW_TITLE = "AutoClicker"
 WINDOW_SIZE = "800x400"
 THEME_MODE = "dark"
 THEME_COLOR = "blue"
 
-# Configuration des boutons
+# Button configuration
 CHANGE_KEY_BUTTON = {
-    "text": "Changer la touche de contrôle",
+    "text": "Change the control key",
     "fg_color": "#D21175",
     "hover_color": "#A50D5C",
     "text_color": "white",
     "corner_radius": 50
 }
 
+# Quit button configuration
 QUIT_BUTTON = {
-    "text": "Quitter (F7)",
+    "text": "Quit (F7)",
     "fg_color": "red",
     "hover_color": "darkred",
     "corner_radius": 50
