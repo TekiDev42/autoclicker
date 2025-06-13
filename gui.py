@@ -103,6 +103,18 @@ class AutoclickerGUI(ctk.CTk):
         key = tk_key.lower()
         return KEY_MAPPING.get(key, key)
 
+    def make_click_counter(self):
+        self.click_counter = AutoclickerLabel(self, text="Clicks: 0")
+        self.click_counter.pack(pady=10)
+
+    def make_change_key_button(self):
+        self.change_key_button = AutoclickerButton(
+            self,
+            command=self.start_key_change,
+            **CHANGE_KEY_BUTTON
+        )
+        self.change_key_button.pack(pady=10)
+
     def make_delay_settings(self):
         # Label for minimum delay
         self.delay_min_label = AutoclickerLabel(self.delay_frame, text="Min delay (ms):")
@@ -137,18 +149,6 @@ class AutoclickerGUI(ctk.CTk):
     def make_delay_frame(self):
         self.delay_frame = AutoclickerFrame(self)
         self.delay_frame.pack(pady=10)
-
-    def make_click_counter(self):
-        self.click_counter = AutoclickerLabel(self, text="Clicks: 0")
-        self.click_counter.pack(pady=10)
-
-    def make_change_key_button(self):
-        self.change_key_button = AutoclickerButton(
-            self,
-            command=self.start_key_change,
-            **CHANGE_KEY_BUTTON
-        )
-        self.change_key_button.pack(pady=10)
 
     def make_quit_button(self):
         self.quit_button = AutoclickerButton(
