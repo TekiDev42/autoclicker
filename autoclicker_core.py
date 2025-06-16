@@ -17,7 +17,7 @@ class Autoclicker:
         self.delay_min = 0.010      # Minimum delay between clicks (in seconds)
         self.delay_max = 0.020      # Maximum delay between clicks (in seconds)
         self.click_count = 0        # Click counter
-        self.control_key = 'ctrl'   # Control key to stop/start
+        self.control_key = 'w'   # Control key to stop/start
         self.random_delay = True    # Random delay activation
         
         # PyAutoGUI safety parameters configuration
