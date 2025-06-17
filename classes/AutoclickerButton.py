@@ -1,10 +1,10 @@
 import customtkinter as ctk
+from constantes.ctk_config import BUTTON_CONFIG
 
 class AutoclickerButton(ctk.CTkButton):
-    default_fg_color = "transparent"
 
     def __init__(self, master, **kwargs):
         if "fg_color" not in kwargs:
-            kwargs["fg_color"] = self.default_fg_color
+            kwargs["fg_color"] = BUTTON_CONFIG["fg_color"]
 
         super().__init__(master, **kwargs)

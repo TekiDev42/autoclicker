@@ -3,7 +3,7 @@ import pyautogui  # For mouse and keyboard control
 import time       # For managing delays
 from threading import Thread  # For background click execution
 import random     # For generating random delays
-from constants import PYAUTOGUI_FAILSAFE, PYAUTOGUI_PAUSE
+from constantes.constants import PYAUTOGUI_FAILSAFE, PYAUTOGUI_PAUSE
 
 class Autoclicker:
     """

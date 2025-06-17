@@ -1,9 +1,10 @@
 import customtkinter as ctk
 import keyboard
-from constants import (
+from constantes.ctk_config import (
     WINDOW_TITLE, WINDOW_SIZE, THEME_MODE, THEME_COLOR,
-    CHANGE_KEY_BUTTON, QUIT_BUTTON, KEY_MAPPING, DEFAULT_FONT, DEFAULT_FONT_SIZE
+    CHANGE_KEY_BUTTON, QUIT_BUTTON, DEFAULT_FONT, DEFAULT_FONT_SIZE
 )
+from constantes.constants import KEY_MAPPING
 from autoclicker_core import Autoclicker
 from classes.AutoclickerLabel import AutoclickerLabel
 from classes.AutoclickerFrame import AutoclickerFrame

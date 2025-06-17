@@ -1,11 +1,10 @@
 import customtkinter as ctk
-from constants import DEFAULT_FONT, DEFAULT_FONT_SIZE
+from constantes.ctk_config import CHECKBOX_CONFIG
 
 class AutoclickerCheckBox(ctk.CTkCheckBox):
-    default_font = (DEFAULT_FONT, DEFAULT_FONT_SIZE)
 
     def __init__(self, master, **kwargs):
         if "font" not in kwargs:
-            kwargs["font"] = self.default_font
+            kwargs["font"] = CHECKBOX_CONFIG["font"]
 
         super().__init__(master, **kwargs)
