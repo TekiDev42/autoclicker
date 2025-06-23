@@ -14,26 +14,25 @@ from classes.AutoclickerCheckBox import AutoclickerCheckBox
 
 
 class AutoclickerGUI(ctk.CTk):
-    main_frame: AutoclickerFrame = None
-    buttons_frame: AutoclickerFrame = None
-    instructions_frame: AutoclickerFrame = None
-    title_label: AutoclickerLabel = None
-    instructions_frame: AutoclickerFrame = None
-    delay_frame: AutoclickerFrame = None
-    click_counter: AutoclickerLabel = None
-    change_key_button: AutoclickerButton = None
-    quit_button: AutoclickerButton = None
-    random_delay_var: ctk.BooleanVar = None
-    random_delay_checkbox: AutoclickerCheckBox = None
-    delay_min_label: AutoclickerLabel = None
-    delay_min_entry: AutoclickerEntry = None
-    delay_max_label: AutoclickerLabel = None
-    delay_max_entry: AutoclickerEntry = None
-    instructions_text1: AutoclickerLabel = None
-    instructions_key: AutoclickerLabel = None
-    instructions_text2: AutoclickerLabel = None
+    main_frame: AutoclickerFrame
+    buttons_frame: AutoclickerFrame
+    title_label: AutoclickerLabel
+    instructions_frame: AutoclickerFrame
+    delay_frame: AutoclickerFrame
+    click_counter: AutoclickerLabel
+    change_key_button: AutoclickerButton
+    quit_button: AutoclickerButton
+    random_delay_var: ctk.BooleanVar
+    random_delay_checkbox: AutoclickerCheckBox
+    delay_min_label: AutoclickerLabel
+    delay_min_entry: AutoclickerEntry
+    delay_max_label: AutoclickerLabel
+    delay_max_entry: AutoclickerEntry
+    instructions_text1: AutoclickerLabel
+    instructions_key: AutoclickerLabel
+    instructions_text2: AutoclickerLabel
     waiting_for_key: bool = False
-    autoclicker: Autoclicker = None
+    autoclicker: Autoclicker
 
     """
     Main GUI class for the autoclicker application.
@@ -204,6 +203,9 @@ class AutoclickerGUI(ctk.CTk):
         """
         if self.waiting_for_key:
             new_key = self.convert_key(event.keysym)
+            if new_key == None:
+                return
+    
             self.autoclicker.set_control_key(new_key)
             self.instructions_key.configure(text=new_key.upper())
             self.change_key_button.configure(text=CHANGE_KEY_BUTTON["text"])

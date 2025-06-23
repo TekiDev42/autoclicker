@@ -14,8 +14,8 @@ class Autoclicker:
         # Control variables initialization
         self.running = False        # Autoclicker running state
         self.click_thread = None    # Thread for click execution
-        self.delay_min = 0.010      # Minimum delay between clicks (in seconds)
-        self.delay_max = 0.020      # Maximum delay between clicks (in seconds)
+        self.delay_min = 0.050      # Minimum delay between clicks (in seconds)
+        self.delay_max = 0.100      # Maximum delay between clicks (in seconds)
         self.click_count = 0        # Click counter
         self.control_key = 'w'   # Control key to stop/start
         self.random_delay = True    # Random delay activation
