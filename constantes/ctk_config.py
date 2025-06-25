@@ -17,6 +17,16 @@ CHANGE_KEY_BUTTON = {
     "font": (DEFAULT_FONT, DEFAULT_FONT_SIZE)
 }
 
+# Pause button configuration
+PAUSE_BUTTON = {
+    "text": "Pause (F8)",
+    "fg_color": "#FF8C00",
+    "hover_color": "#E67E00",
+    "text_color": "white",
+    "corner_radius": 50,
+    "font": (DEFAULT_FONT, DEFAULT_FONT_SIZE)
+}
+
 # Quit button configuration
 QUIT_BUTTON = {
     "text": "Quit (F7)",

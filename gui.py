@@ -2,7 +2,7 @@ import customtkinter as ctk
 import keyboard
 from constantes.ctk_config import (
     WINDOW_TITLE, WINDOW_SIZE, THEME_MODE, THEME_COLOR,
-    CHANGE_KEY_BUTTON, QUIT_BUTTON, DEFAULT_FONT, DEFAULT_FONT_SIZE
+    CHANGE_KEY_BUTTON, PAUSE_BUTTON, QUIT_BUTTON, DEFAULT_FONT, DEFAULT_FONT_SIZE
 )
 from constantes.constants import KEY_MAPPING
 from autoclicker_core import Autoclicker
@@ -21,6 +21,7 @@ class AutoclickerGUI(ctk.CTk):
     delay_frame: AutoclickerFrame
     click_counter: AutoclickerLabel
     change_key_button: AutoclickerButton
+    pause_button: AutoclickerButton
     quit_button: AutoclickerButton
     random_delay_var: ctk.BooleanVar
     random_delay_checkbox: AutoclickerCheckBox
@@ -32,6 +33,7 @@ class AutoclickerGUI(ctk.CTk):
     instructions_key: AutoclickerLabel
     instructions_text2: AutoclickerLabel
     waiting_for_key: bool = False
+    is_paused: bool = False
     autoclicker: Autoclicker
 
     """
@@ -107,6 +109,9 @@ class AutoclickerGUI(ctk.CTk):
 
         # Button to change the key
         self.make_change_key_button()
+        
+        # Button to pause/resume
+        self.make_pause_button()
         
         # Close button
         self.make_quit_button()
@@ -187,6 +192,14 @@ class AutoclickerGUI(ctk.CTk):
         self.instructions_key.pack(side="left")
         self.instructions_text2.pack(side="left")
 
+    def make_pause_button(self):
+        self.pause_button = AutoclickerButton(
+            self.buttons_frame,
+            command=self.toggle_pause,
+            **PAUSE_BUTTON
+        )
+        self.pause_button.pack(side="left", padx=10)
+
     def make_quit_button(self):
         self.quit_button = AutoclickerButton(
             self.buttons_frame,
@@ -217,15 +230,16 @@ class AutoclickerGUI(ctk.CTk):
         """
         Starts the autoclicker and updates click counter
         """
-        self.autoclicker.start()
-        self.click_counter.configure(text=f"Clicks: {self.autoclicker.click_count}")
+        if not self.is_paused:
+            self.autoclicker.start()
+            self.click_counter.configure(text=f"Clicks: {self.autoclicker.click_count}")
         
     def start_key_change(self):
         """
         Initiates the process of changing the control key
         Updates UI to indicate waiting for new key input
         """
-        if not self.waiting_for_key:
+        if not self.waiting_for_key and not self.is_paused:
             self.waiting_for_key = True
             self.change_key_button.configure(text="Press a key...")
             self.bind_all("<Key>", self.on_key_press)
@@ -234,8 +248,9 @@ class AutoclickerGUI(ctk.CTk):
         """
         Stops the autoclicker and updates click counter
         """
-        self.autoclicker.stop()
-        self.click_counter.configure(text=f"Clicks: {self.autoclicker.click_count}")
+        if not self.is_paused:
+            self.autoclicker.stop()
+            self.click_counter.configure(text=f"Clicks: {self.autoclicker.click_count}")
 
     def toggle_random_delay(self):
         """
@@ -286,8 +301,24 @@ class AutoclickerGUI(ctk.CTk):
         - Control key press (start clicking)
         - Control key release (stop clicking)
         - F7 key (quit application)
+        - F8 key (pause/resume)
         """
         keyboard.unhook_all()
         keyboard.on_press_key(self.autoclicker.control_key, lambda _: self.start_clicking())
         keyboard.on_release_key(self.autoclicker.control_key, lambda _: self.stop_clicking())
         keyboard.on_press_key('f7', lambda _: self.quit())
+        keyboard.on_press_key('f8', lambda _: self.toggle_pause())
+
+    def toggle_pause(self):
+        """
+        Toggles the pause state of the autoclicker
+        """
+        self.is_paused = not self.is_paused
+        if self.is_paused:
+            self.pause_button.configure(text="Resume (F8)")
+            keyboard.unhook_all()
+            keyboard.on_press_key('f8', lambda _: self.toggle_pause())
+            keyboard.on_press_key('f7', lambda _: self.quit())
+        else:
+            self.pause_button.configure(text="Pause (F8)")
+            self.update_key_bindings()
