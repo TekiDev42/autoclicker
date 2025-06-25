@@ -18,8 +18,8 @@ python main.py
 ```
 
 2. Default configuration:
-   - Control key: Ctrl
-   - Delay between clicks: 10-20ms (random)
+   - Control key: W
+   - Delay between clicks: 50-100ms (random)
    - Minimum delay: 10ms
    - Use F7 key to completely exit the program
 
