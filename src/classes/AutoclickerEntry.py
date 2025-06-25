@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from constantes.ctk_config import ENTRY_CONFIG
+from src.constantes.ctk_config import ENTRY_CONFIG
 
 class AutoclickerEntry(ctk.CTkEntry):
     def __init__(self, master, **kwargs):

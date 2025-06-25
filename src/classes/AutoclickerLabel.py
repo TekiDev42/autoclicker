@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from constantes.ctk_config import LABEL_CONFIG
+from src.constantes.ctk_config import LABEL_CONFIG
 
 class AutoclickerLabel(ctk.CTkLabel):
 

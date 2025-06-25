@@ -1,4 +1,4 @@
-from gui import AutoclickerGUI
+from src.gui import AutoclickerGUI
 
 def main():
     app = AutoclickerGUI()

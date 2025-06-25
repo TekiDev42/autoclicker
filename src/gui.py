@@ -1,16 +1,16 @@
 import customtkinter as ctk
 import keyboard
-from constantes.ctk_config import (
+from src.constantes.ctk_config import (
     WINDOW_TITLE, WINDOW_SIZE, THEME_MODE, THEME_COLOR,
     CHANGE_KEY_BUTTON, PAUSE_BUTTON, QUIT_BUTTON, DEFAULT_FONT, DEFAULT_FONT_SIZE
 )
-from constantes.constants import KEY_MAPPING
-from autoclicker_core import Autoclicker
-from classes.AutoclickerLabel import AutoclickerLabel
-from classes.AutoclickerFrame import AutoclickerFrame
-from classes.AutoclickerButton import AutoclickerButton
-from classes.AutoclickerEntry import AutoclickerEntry
-from classes.AutoclickerCheckBox import AutoclickerCheckBox
+from src.constantes.constants import KEY_MAPPING
+from src.autoclicker_core import Autoclicker
+from src.classes.AutoclickerLabel import AutoclickerLabel
+from src.classes.AutoclickerFrame import AutoclickerFrame
+from src.classes.AutoclickerButton import AutoclickerButton
+from src.classes.AutoclickerEntry import AutoclickerEntry
+from src.classes.AutoclickerCheckBox import AutoclickerCheckBox
 
 
 class AutoclickerGUI(ctk.CTk):

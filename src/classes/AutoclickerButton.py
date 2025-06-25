@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from constantes.ctk_config import BUTTON_CONFIG
+from src.constantes.ctk_config import BUTTON_CONFIG
 
 class AutoclickerButton(ctk.CTkButton):
 

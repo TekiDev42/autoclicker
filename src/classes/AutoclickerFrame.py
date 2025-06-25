@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from constantes.ctk_config import FRAME_CONFIG
+from src.constantes.ctk_config import FRAME_CONFIG
 
 # Custom class that inherits from CTkFrame to create frames in the interface
 class AutoclickerFrame(ctk.CTkFrame):

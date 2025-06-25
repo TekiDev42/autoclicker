@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from constantes.ctk_config import CHECKBOX_CONFIG
+from src.constantes.ctk_config import CHECKBOX_CONFIG
 
 class AutoclickerCheckBox(ctk.CTkCheckBox):
 
